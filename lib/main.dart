@@ -1,6 +1,10 @@
+import 'package:emmet_dojo/services/admob.dart';
 import 'package:flutter/material.dart';
+import 'package:admob_flutter/admob_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Admob.initialize();
   runApp(MyApp());
 }
 
@@ -28,6 +32,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var lists = [
@@ -43,8 +55,48 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
           padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
           child: Column(
-            children: lists,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: lists,
+                ),
+              ),
+              // Todo
+              Text('test'),
+            ],
           )),
+      bottomNavigationBar: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AdmobBanner(
+            adUnitId: AdMobService().getBannerAdUnitId(),
+            adSize: AdmobBannerSize(
+              width: MediaQuery.of(context).size.width.toInt(),
+              height: AdMobService().getHeight(context).toInt(),
+              name: 'SMART_BANNER',
+            ),
+          ),
+          // BottomNavigationBar(
+          //   items: const [
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.home),
+          //       label: '',
+          //     ),
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.list),
+          //       label: '',
+          //     ),
+          //     BottomNavigationBarItem(
+          //       icon: Icon(Icons.person),
+          //       label: '',
+          //     ),
+          //   ],
+          //   currentIndex: _selectedIndex,
+          //   onTap: _onItemTapped,
+          // ),
+        ],
+      ),
     );
   }
 
