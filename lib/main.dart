@@ -160,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Text(
-                      '達成率：10/10',
+                      '達成率：0/10',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
