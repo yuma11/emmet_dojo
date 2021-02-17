@@ -62,7 +62,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               // Todo
-              Text('test'),
+              Container(
+                child: Image.asset(
+                  './assets/images/neko01.png',
+                  height: 150.0,
+                  width: 150.0,
+                ),
+              )
             ],
           )),
       bottomNavigationBar: Column(
@@ -126,11 +132,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return InkWell(
       onTap: () {
         // Todo
+        print('Push!');
       },
       child: Card(
         margin: EdgeInsets.only(top: 32),
         child: Container(
-          height: 100,
+          height: 90, // カードサイズ
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: _modeColor,
@@ -139,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(children: <Widget>[
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(32),
+                padding: EdgeInsets.only(left: 32, right: 32),
                 alignment: Alignment.centerLeft,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
