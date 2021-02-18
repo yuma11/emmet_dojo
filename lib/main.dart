@@ -1,6 +1,9 @@
+import 'package:emmet_dojo/play_page.dart';
+import 'package:emmet_dojo/score_model.dart';
 import 'package:emmet_dojo/services/admob.dart';
 import 'package:flutter/material.dart';
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,26 +20,26 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: MyHomePage(title: 'Emmet Dojo'),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => MyHomePage(),
+        '/playpage': (BuildContext context) => PlayPage(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
+  int _score;
+  ScoreModel scoreModel = ScoreModel();
+  void updateScore() {
     setState(() {
-      _selectedIndex = index;
+      _score = scoreModel.score;
     });
   }
 
@@ -48,60 +51,50 @@ class _MyHomePageState extends State<MyHomePage> {
       _modePanel("レベル３", "html-5", "red", context),
       _modePanel("ランダム", "html-5", "green", context),
     ];
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  children: lists,
-                ),
+    return ChangeNotifierProvider<ScoreModel>(
+      create: (_) => ScoreModel()..getScore(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Emmet Dojo'),
+        ),
+        floatingActionButton: FloatingActionButton(),
+        body: Consumer<ScoreModel>(builder: (context, model, child) {
+          return Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: lists,
+                    ),
+                  ),
+                  // Todo
+                  Text(model.score
+                      .toString()), /////////////////////////////////////////////////Todo
+                  Container(
+                    child: Image.asset(
+                      './assets/images/neko01.png',
+                      height: 150.0,
+                      width: 150.0,
+                    ),
+                  )
+                ],
+              ));
+        }),
+        bottomNavigationBar: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AdmobBanner(
+              adUnitId: AdMobService().getBannerAdUnitId(),
+              adSize: AdmobBannerSize(
+                width: MediaQuery.of(context).size.width.toInt(),
+                height: AdMobService().getHeight(context).toInt(),
+                name: 'SMART_BANNER',
               ),
-              // Todo
-              Container(
-                child: Image.asset(
-                  './assets/images/neko01.png',
-                  height: 150.0,
-                  width: 150.0,
-                ),
-              )
-            ],
-          )),
-      bottomNavigationBar: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AdmobBanner(
-            adUnitId: AdMobService().getBannerAdUnitId(),
-            adSize: AdmobBannerSize(
-              width: MediaQuery.of(context).size.width.toInt(),
-              height: AdMobService().getHeight(context).toInt(),
-              name: 'SMART_BANNER',
             ),
-          ),
-          // BottomNavigationBar(
-          //   items: const [
-          //     BottomNavigationBarItem(
-          //       icon: Icon(Icons.home),
-          //       label: '',
-          //     ),
-          //     BottomNavigationBarItem(
-          //       icon: Icon(Icons.list),
-          //       label: '',
-          //     ),
-          //     BottomNavigationBarItem(
-          //       icon: Icon(Icons.person),
-          //       label: '',
-          //     ),
-          //   ],
-          //   currentIndex: _selectedIndex,
-          //   onTap: _onItemTapped,
-          // ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -131,8 +124,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return InkWell(
       onTap: () {
-        // Todo
-        print('Push!');
+        Navigator.of(context)
+            .pushNamed("/playpage", arguments: _modeName); // プレイ画面へ
       },
       child: Card(
         margin: EdgeInsets.only(top: 32),
