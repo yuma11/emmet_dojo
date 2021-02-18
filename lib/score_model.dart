@@ -14,7 +14,7 @@ class ScoreModel extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     this.score = prefs.getInt('counter');
 
-    print("h");
+    print("OK");
     notifyListeners();
   }
 

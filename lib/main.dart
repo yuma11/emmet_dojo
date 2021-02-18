@@ -12,7 +12,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,29 +34,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _score;
-  ScoreModel scoreModel = ScoreModel();
-  void updateScore() {
-    setState(() {
-      _score = scoreModel.score;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    var lists = [
-      _modePanel("レベル１", "html-5", "blue", context),
-      _modePanel("レベル２", "html-5", "yellow", context),
-      _modePanel("レベル３", "html-5", "red", context),
-      _modePanel("ランダム", "html-5", "green", context),
-    ];
     return ChangeNotifierProvider<ScoreModel>(
       create: (_) => ScoreModel()..getScore(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Emmet Dojo'),
         ),
-        floatingActionButton: FloatingActionButton(),
         body: Consumer<ScoreModel>(builder: (context, model, child) {
           return Padding(
               padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -65,12 +49,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Expanded(
                     child: Column(
-                      children: lists,
+                      children: <Widget>[
+                        _modePanel("レベル１", "html-5", "blue", context, model),
+                        _modePanel("レベル２", "html-5", "yellow", context, model),
+                        _modePanel("レベル３", "html-5", "red", context, model),
+                        _modePanel("ランダム", "html-5", "green", context, model),
+                      ],
                     ),
                   ),
-                  // Todo
-                  Text(model.score
-                      .toString()), /////////////////////////////////////////////////Todo
                   Container(
                     child: Image.asset(
                       './assets/images/neko01.png',
@@ -101,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // カードウィジェット
   //---------------------------------------
-  Widget _modePanel(
-      String modeName, String modeImg, String color, BuildContext context) {
+  Widget _modePanel(String modeName, String modeImg, String color,
+      BuildContext context, ScoreModel model) {
     var _modeName = modeName;
     var _modeImg = "assets/images/" + modeImg + ".svg";
     var _modeColor;
@@ -153,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Text(
-                      '達成率：0/10',
+                      model.score.toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

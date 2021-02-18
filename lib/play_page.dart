@@ -32,7 +32,7 @@ class _PlayPageState extends State<PlayPage> {
                 style: TextStyle(fontSize: 100.0),
               ),
               RaisedButton(
-                  child: Text('おしてね'),
+                  child: Text('PUSH'),
                   onPressed: () {
                     model.add();
                   })
