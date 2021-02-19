@@ -10,19 +10,12 @@ class PlayPage extends StatefulWidget {
 
 class _PlayPageState extends State<PlayPage> {
   String mode;
-  int _score;
-
-  void _incrementScore() {
-    // ➃変数の値を変更する際、setStateを必ず呼ぶ必要がある
-    setState(() => _score++);
-  }
 
   @override
   Widget build(BuildContext context) {
     ModeArguments modeArguments =
         ModalRoute.of(context).settings.arguments; // 選択されたモード名を引数より取得
     this.mode = modeArguments.mode;
-    this._score = modeArguments.score;
 
     return ChangeNotifierProvider<ScoreModel>(
       create: (_) => ScoreModel()..getScore(),
@@ -36,6 +29,29 @@ class _PlayPageState extends State<PlayPage> {
               ),
           body: Consumer<ScoreModel>(builder: (context, model, child) {
             return Column(children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 32, 8, 32),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        height: 300,
+                        width: MediaQuery.of(context).size.width - 16,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 4,
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Text(
+                          '<a href=""></a>',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      )
+                    ]),
+              ),
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -56,6 +72,7 @@ class _PlayPageState extends State<PlayPage> {
   }
 }
 
+// モード選択によって表示するスコア値の変更
 Widget returnModeScore(String mode, ScoreModel model) {
   switch (mode) {
     case 'レベル１':
