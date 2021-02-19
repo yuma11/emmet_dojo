@@ -1,5 +1,7 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:emmet_dojo/main.dart';
 import 'package:emmet_dojo/score_model.dart';
+import 'package:emmet_dojo/services/admob.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +12,7 @@ class PlayPage extends StatefulWidget {
 
 class _PlayPageState extends State<PlayPage> {
   String mode;
+  var _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,20 @@ class _PlayPageState extends State<PlayPage> {
               onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
                   "/", (_) => false) // プッシュされたルート下にある全てのルートを削除した後、ホーム画面を表示
               ),
+          bottomNavigationBar: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AdmobBanner(
+                adUnitId: AdMobService().getBannerAdUnitId(),
+                adSize: AdmobBannerSize(
+                  width: MediaQuery.of(context).size.width.toInt(),
+                  height: AdMobService().getHeight(context).toInt(),
+                  name: 'SMART_BANNER',
+                ),
+              ),
+            ],
+          ),
           body: Consumer<ScoreModel>(builder: (context, model, child) {
             return Column(children: <Widget>[
               Padding(
@@ -40,14 +57,16 @@ class _PlayPageState extends State<PlayPage> {
                         width: MediaQuery.of(context).size.width - 16,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Colors.black,
-                            width: 4,
+                            color: Colors.teal[600],
+                            width: 6,
                           ),
                           borderRadius: BorderRadius.circular(3),
                         ),
-                        child: Text(
-                          '<a href=""></a>',
-                          style: TextStyle(fontSize: 18.0),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            '<a href=""></a>',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
                         ),
                       )
                     ]),
@@ -55,13 +74,28 @@ class _PlayPageState extends State<PlayPage> {
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    returnModeScore(this.mode, model),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 64),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 32,
+                        child: TextField(
+                          controller: _textController,
+                        ),
+                      ),
+                    )
+                    //returnModeScore(this.mode, model), // Todo 確認用
                   ]),
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     RaisedButton(
-                        child: Text('PUSH'),
+                        padding: const EdgeInsets.fromLTRB(120, 60, 120, 60),
+                        child: Text(
+                          'ENTER',
+                          style: TextStyle(fontSize: 32.0),
+                        ),
+                        color: Colors.teal[600],
+                        textColor: Colors.white,
                         onPressed: () {
                           model.add(this.mode);
                         }),
