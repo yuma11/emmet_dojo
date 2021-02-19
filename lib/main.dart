@@ -50,10 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: Column(
                       children: <Widget>[
-                        _modePanel("レベル１", "html-5", "blue", context, model),
-                        _modePanel("レベル２", "html-5", "yellow", context, model),
-                        _modePanel("レベル３", "html-5", "red", context, model),
-                        _modePanel("ランダム", "html-5", "green", context, model),
+                        _modePanel("レベル１", "html-5", "blue", context, model,
+                            model.level1Score),
+                        _modePanel("レベル２", "html-5", "yellow", context, model,
+                            model.level2Score),
+                        _modePanel("レベル３", "html-5", "red", context, model,
+                            model.level3Score),
+                        _modePanel("ランダム", "html-5", "green", context, model,
+                            model.randomScore),
                       ],
                     ),
                   ),
@@ -88,10 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
   // カードウィジェット
   //---------------------------------------
   Widget _modePanel(String modeName, String modeImg, String color,
-      BuildContext context, ScoreModel model) {
-    var _modeName = modeName;
-    var _modeImg = "assets/images/" + modeImg + ".svg";
-    var _modeColor;
+      BuildContext context, ScoreModel model, int score) {
+    String _modeName = modeName;
+    Color _modeColor;
+    int _modeScore = score;
 
     switch (color) {
       case 'blue':
@@ -110,8 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context)
-            .pushNamed("/playpage", arguments: _modeName); // プレイ画面へ
+        Navigator.of(context).pushNamed("/playpage",
+            arguments: ModeArguments(_modeName, _modeScore)); // プレイ画面へ
       },
       child: Card(
         margin: EdgeInsets.only(top: 32),
@@ -139,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Text(
-                      model.score.toString(),
+                      _modeScore.toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -155,4 +159,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class ModeArguments {
+  ModeArguments(this.mode, this.score);
+
+  final String mode;
+  final int score;
 }
