@@ -14,6 +14,13 @@ class _PlayPageState extends State<PlayPage> {
   String mode;
   var _textController = TextEditingController();
 
+  // Emmet入力後の処理
+  void _submission() {
+    _textController.clear();
+  }
+
+  var question = ['<a href=""></a>', '<div>'];
+
   @override
   Widget build(BuildContext context) {
     ModeArguments modeArguments =
@@ -64,7 +71,7 @@ class _PlayPageState extends State<PlayPage> {
                         ),
                         child: SingleChildScrollView(
                           child: Text(
-                            '<a href=""></a>',
+                            this.question[0], // Todo クエスチョンの作成
                             style: TextStyle(fontSize: 20.0),
                           ),
                         ),
@@ -75,11 +82,16 @@ class _PlayPageState extends State<PlayPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 64),
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 56),
                       child: Container(
                         width: MediaQuery.of(context).size.width - 32,
                         child: TextField(
                           controller: _textController,
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.text_fields),
+                            hintText: 'Emmetを入力してください',
+                            labelText: 'Emmet',
+                          ),
                         ),
                       ),
                     )
@@ -89,16 +101,27 @@ class _PlayPageState extends State<PlayPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     RaisedButton(
-                        padding: const EdgeInsets.fromLTRB(120, 60, 120, 60),
+                        padding: const EdgeInsets.fromLTRB(120, 56, 120, 56),
                         child: Text(
                           'ENTER',
-                          style: TextStyle(fontSize: 32.0),
+                          style: TextStyle(fontSize: 32),
                         ),
                         color: Colors.teal[600],
                         textColor: Colors.white,
                         onPressed: () {
                           model.add(this.mode);
+                          _submission();
                         }),
+                  ]),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.only(top: 32),
+                        child: Text(
+                          '0 / 10',
+                          style: TextStyle(fontSize: 20),
+                        ))
                   ])
             ]);
           })),
