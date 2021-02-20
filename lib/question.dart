@@ -20,7 +20,7 @@ class Question {
     }
   }
 
-  List questions2 = [
+  List questions1 = [
     ['<div></div>', 'div'],
     ['<a href=""></a>', 'a'],
     ['<div class="item"></div>', '.item'],
@@ -54,7 +54,7 @@ class Question {
     ['<img src="a.png" alt="a">', 'img[src="a.png" alt="a"]'],
   ];
 
-  List questions = [
+  List questions2 = [
     [
       '<header></header>\n<main></main>\n<footer></footer>',
       'header+main+footer'
@@ -99,6 +99,108 @@ class Question {
     [
       '<table>\n  <tr>\n    <th>a</th>\n    <th>b</th>\n  <tr>\n</table>',
       'table>tr>th{a}+th{b}'
+    ],
+  ];
+
+  List questions = [
+    [
+      '''
+<div>
+  <header>
+    <ul>
+      <li><a href=""></a></li>
+      <li><a href=""></a></li>
+    </ul>
+  </header>
+  <footer>
+    <p></p>
+  </footer>
+</div>
+      ''',
+      'div>(header>ul>li*2>a)+footer>p'
+    ],
+    [
+      '''
+<div class="item1">
+  <div class="item2">
+    <img src="" alt="">
+    <p></p>
+    <img src="" alt="">
+    <p></p>
+  </div>
+</div>
+<footer>
+  <p></p>
+</footer>
+      ''',
+      '(.item1>.item2>(img+p)*2)+footer>p'
+    ],
+    [
+      '''
+<ul>
+  <li class="item5"></li>
+  <li class="item4"></li>
+  <li class="item3"></li>
+  <li class="item2"></li>
+  <li class="item1"></li>
+</ul>
+      ''',
+      'ul>li.item\$@-*5'
+    ],
+    [
+      '''
+<ul>
+  <li class="item3"></li>
+  <li class="item4"></li>
+  <li class="item5"></li>
+  <li class="item6"></li>
+  <li class="item7"></li>
+</ul>
+      ''',
+      'ul>li.item\$@3*5'
+    ],
+    [
+      '''
+<ul>
+  <li class="item1" data-item3=""></li>
+  <li class="item2" data-item2=""></li>
+  <li class="item3" data-item1=""></li>
+</ul>
+      ''',
+      'ul>li.item\$[data-item\$@-]*3'
+    ],
+    [
+      '''
+<table>
+  <tr>
+    <th>a</th>
+    <th>b</th>
+  </tr>
+  <tr>
+    <td>c</td>
+    <td>d</td>
+  </tr>
+</table>
+      ''',
+      'table>(tr>th{a}+th{b})+tr>td{c}+td{d}'
+    ],
+    [
+      '''
+<div id="item">
+  <p>Click<a href="#">ME</a></p>
+</div>
+      ''',
+      '#item>p>{Click}a[href=#]{ME}'
+    ],
+    [
+      '''
+<div>
+  <img src="" alt="">
+  <p>I<span>Love</span><a href="">Program</a></p>
+</div>
+<p></p>
+      ''',
+      'div>img+p>{I}span{Love}+a{Program}^^p'
     ],
   ];
 }
