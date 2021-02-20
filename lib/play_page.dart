@@ -14,6 +14,7 @@ class PlayPage extends StatefulWidget {
 class _PlayPageState extends State<PlayPage> {
   String mode;
   int index = 0;
+  int correctAnswer = 0;
   var _textController = TextEditingController();
 
   @override
@@ -28,11 +29,13 @@ class _PlayPageState extends State<PlayPage> {
     void _submission(int index) {
       bool isCorrect = question.checkTheAnswer(index, _textController.text);
       _showDialog(isCorrect, question.printAnswer(this.index));
-      if (isCorrect) {
-        setState(() {
-          this.index++;
-        });
-      }
+      // if (isCorrect) {
+      //   setState(() {
+      //     this.index++;
+      //   });
+      // }
+      this.index++;
+      this.correctAnswer++;
       _textController.clear();
     }
 
@@ -131,7 +134,7 @@ class _PlayPageState extends State<PlayPage> {
                       Padding(
                           padding: EdgeInsets.only(top: 32),
                           child: Text(
-                            '0 / 10',
+                            '${this.correctAnswer} / 10',
                             style: TextStyle(fontSize: 20),
                           ))
                     ])
