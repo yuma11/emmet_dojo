@@ -14,7 +14,8 @@ class PlayPage extends StatefulWidget {
 class _PlayPageState extends State<PlayPage> {
   String mode;
   int index = 0;
-  int correctAnswer = 0;
+  int correctAnswer = 1;
+  bool isTextFieldEnabled = true;
   var _textController = TextEditingController();
 
   @override
@@ -26,16 +27,32 @@ class _PlayPageState extends State<PlayPage> {
     Question question = Question(this.mode); // Todo
 
     // Emmet入力後の処理
-    void _submission(int index) {
-      bool isCorrect = question.checkTheAnswer(index, _textController.text);
-      _showDialog(isCorrect, question.printAnswer(this.index));
+    void _submission(int index) async {
+      bool isCorrect =
+          question.checkTheAnswer(this.mode, index, _textController.text);
       // if (isCorrect) {
       //   setState(() {
       //     this.index++;
       //   });
       // }
-      this.index++;
-      this.correctAnswer++;
+      if (correctAnswer < 15) {
+        _showDialog(
+            isCorrect,
+            false,
+            question.printAnswer(
+                this.mode, this.index)); // _showDialog(正誤判定, 終了判定, 答えのEmmet)
+        this.index++;
+        this.correctAnswer++;
+      } else {
+        _showDialog(
+            isCorrect,
+            true,
+            question.printAnswer(
+                this.mode, this.index)); // _showDialog(正誤判定, 終了判定, 答えのEmmet)
+      }
+      setState(() {
+        this.isTextFieldEnabled = false;
+      });
       _textController.clear();
     }
 
@@ -84,8 +101,8 @@ class _PlayPageState extends State<PlayPage> {
                           ),
                           child: SingleChildScrollView(
                             child: Text(
-                              question
-                                  .printQuestion(this.index), // Todo クエスチョンの作成
+                              question.printQuestion(
+                                  this.mode, this.index), // Todo クエスチョンの作成
                               style: TextStyle(fontSize: 20.0),
                             ),
                           ),
@@ -101,6 +118,7 @@ class _PlayPageState extends State<PlayPage> {
                           width: MediaQuery.of(context).size.width - 32,
                           child: TextField(
                             //Todo
+                            enabled: this.isTextFieldEnabled,
                             controller: _textController,
                             decoration: const InputDecoration(
                               icon: Icon(Icons.text_fields),
@@ -134,7 +152,7 @@ class _PlayPageState extends State<PlayPage> {
                       Padding(
                           padding: EdgeInsets.only(top: 32),
                           child: Text(
-                            '${this.correctAnswer} / 10',
+                            '${this.correctAnswer} / 15',
                             style: TextStyle(fontSize: 20),
                           ))
                     ])
@@ -144,29 +162,42 @@ class _PlayPageState extends State<PlayPage> {
     );
   }
 
-  Future _showDialog(bool isCorrect, String answer) async {
-    var value = await showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: isCorrect ? Text('正解！') : Text('不正解...'),
-        content: isCorrect ? Text('その調子！') : Text('正解は「${answer}」です。'),
-        actions: <Widget>[
-          // Todo
-          // SimpleDialogOption(
-          //   child: Text('次へ'),
-          //   onPressed: () {
-          //     Navigator.pop(context, 'NO');
-          //   },
-          // ),
-        ],
-      ),
-    );
-    // switch (value) {
-    //   case 'YES':
-    //     break;
-    //   case 'NO':
-    //     break;
-    // }
+  Future _showDialog(bool isCorrect, bool isEnd, String answer) async {
+    if (isEnd) {
+      var value1 = await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text('終了！'),
+          content: Text('お疲れさん！'),
+          actions: <Widget>[
+            // Todo
+            SimpleDialogOption(
+              child: Text('トップへ'),
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil("/", (_) => false);
+              },
+            ),
+          ],
+        ),
+      );
+    } else {
+      var value2 = await showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: isEnd
+              ? Text('終了！')
+              : isCorrect
+                  ? Text('正解！')
+                  : Text('不正解...'),
+          content: isEnd
+              ? Text('お疲れ様でした。')
+              : isCorrect
+                  ? Text('その調子！')
+                  : Text('正解は「${answer}」です。'),
+        ),
+      );
+    }
   }
 }
 

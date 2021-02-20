@@ -1,22 +1,68 @@
+import 'dart:math' as math;
+
 class Question {
   final String mode;
   Question(this.mode);
 
   // Todo
-  String printQuestion(int i) {
-    return questions[i][0];
+  String printQuestion(String mode, int i) {
+    switch (mode) {
+      case 'レベル１':
+        return questions1[i][0];
+        break;
+      case 'レベル２':
+        return questions2[i][0];
+        break;
+      case 'レベル３':
+        return questions3[i][0];
+        break;
+      default:
+        break;
+    }
   }
 
   // Todo
-  String printAnswer(int i) {
-    return questions[i][1];
+  String printAnswer(String mode, int i) {
+    switch (mode) {
+      case 'レベル１':
+        return questions1[i][1];
+        break;
+      case 'レベル２':
+        return questions2[i][1];
+        break;
+      case 'レベル３':
+        return questions3[i][1];
+        break;
+      default:
+        break;
+    }
   }
 
-  bool checkTheAnswer(int i, String emmet) {
-    if (emmet == questions[i][1]) {
-      return true;
-    } else {
-      return false;
+  bool checkTheAnswer(String mode, int i, String emmet) {
+    switch (mode) {
+      case 'レベル１':
+        if (emmet == questions1[i][1]) {
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      case 'レベル２':
+        if (emmet == questions2[i][1]) {
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      case 'レベル３':
+        if (emmet == questions3[i][1]) {
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      default:
+        break;
     }
   }
 
@@ -102,7 +148,7 @@ class Question {
     ],
   ];
 
-  List questions = [
+  List questions3 = [
     [
       '''
 <div>
@@ -201,6 +247,27 @@ class Question {
 <p></p>
       ''',
       'div>img+p>{I}span{Love}+a{Program}^^p'
+    ],
+    [
+      '''
+<div class="item1">
+  <ul>
+    <li class="item2"></li>
+    <li class="item1"></li>
+  </ul>
+  <div class="item2"></div>
+</div>
+      ''',
+      '.item1>(ul>li.item\$@-*2>)+.item2'
+    ],
+    [
+      '''
+<div class="item1">
+  <p id="item2" class="item3 item4"><a href="#">hello</a></p>
+  <img src="a.png" alt="a">
+</div>
+      ''',
+      '.item1>p#item2.item3.item4>a[href="#"]{hello}^img[src="a.png" alt="a"]'
     ],
   ];
 }
