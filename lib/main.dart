@@ -48,26 +48,29 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 children: <Widget>[
                   Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        _modePanel("レベル１", "html-5", "blue", context, model,
-                            model.level1Score),
-                        _modePanel("レベル２", "html-5", "yellow", context, model,
-                            model.level2Score),
-                        _modePanel("レベル３", "html-5", "red", context, model,
-                            model.level3Score),
-                        _modePanel("ランダム", "html-5", "green", context, model,
-                            model.randomScore),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          _modePanel("レベル１", "html-5", "blue", context, model,
+                              model.level1Score),
+                          _modePanel("レベル２", "html-5", "yellow", context, model,
+                              model.level2Score),
+                          _modePanel("レベル３", "html-5", "red", context, model,
+                              model.level3Score),
+                          _modePanel("ランダム", "html-5", "green", context, model,
+                              model.randomScore),
+                        ],
+                      ),
                     ),
                   ),
-                  Container(
-                    child: Image.asset(
-                      './assets/images/neko01.png',
-                      height: 150.0,
-                      width: 150.0,
-                    ),
-                  )
+                  // Todo スコアに応じた画像の設定
+                  // Container(
+                  //   child: Image.asset(
+                  //     './assets/images/neko01.png',
+                  //     height: 120.0,
+                  //     width: 120.0,
+                  //   ),
+                  // )
                 ],
               ));
         }),
@@ -118,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
             arguments: ModeArguments(_modeName, _modeScore)); // プレイ画面へ
       },
       child: Card(
-        margin: EdgeInsets.only(top: 32),
+        margin: EdgeInsets.only(top: 24),
         child: Container(
           height: 90, // カードサイズ
           width: MediaQuery.of(context).size.width,
