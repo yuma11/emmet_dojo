@@ -97,7 +97,7 @@ class Question {
     if (i < 15 && randIndex == 0) {
       var rand = math.Random();
       int randIndex = rand.nextInt(40);
-      return sumQuestion[randIndex][0];
+      return sumQuestion[14][0];
     } else if (i < 15) {
       return sumQuestion[randIndex][0];
     }
