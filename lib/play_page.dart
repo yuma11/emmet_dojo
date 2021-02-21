@@ -1,4 +1,5 @@
 import 'package:admob_flutter/admob_flutter.dart';
+import 'dart:math' as math;
 import 'package:emmet_dojo/main.dart';
 import 'package:emmet_dojo/question.dart';
 import 'package:emmet_dojo/score_model.dart';
@@ -14,7 +15,10 @@ class PlayPage extends StatefulWidget {
 class _PlayPageState extends State<PlayPage> {
   String mode;
   int index = 0;
-  int correctAnswer = 1;
+  int currentIndex = 1;
+  int correctAnswer = 0;
+  int backRandIndex = 0;
+  int randIndex = 0;
   bool isTextFieldEnabled = true;
   var _textController = TextEditingController();
 
@@ -26,32 +30,44 @@ class _PlayPageState extends State<PlayPage> {
 
     Question question = Question(this.mode); // Todo
 
+    void nextRandomQuestion() {
+      var rand = math.Random();
+      this.randIndex = rand.nextInt(40);
+      question.randomQuestion(this.index, this.randIndex);
+    }
+
     // Emmet入力後の処理
-    void _submission(int index) async {
-      bool isCorrect =
-          question.checkTheAnswer(this.mode, index, _textController.text);
-      // if (isCorrect) {
-      //   setState(() {
-      //     this.index++;
-      //   });
-      // }
-      if (correctAnswer < 15) {
+    void _submission(int index, ScoreModel model) async {
+      bool isCorrect = question.checkTheAnswer(
+          this.mode, index, _textController.text, randIndex);
+
+      // 正解であれば正解数をプラス
+      if (isCorrect) {
+        this.correctAnswer++;
+      }
+
+      // 問題数が15未満の時
+      if (currentIndex < question.returnQuestionLength(this.mode)) {
         _showDialog(
             isCorrect,
             false,
-            question.printAnswer(
-                this.mode, this.index)); // _showDialog(正誤判定, 終了判定, 答えのEmmet)
+            question.printAnswer(this.mode, this.index,
+                this.randIndex)); // _showDialog(正誤判定, 終了判定, 答えのEmmet)
+        nextRandomQuestion();
         this.index++;
-        this.correctAnswer++;
+        this.currentIndex++;
+        // 問題数が15以上の時
       } else {
+        model.add(this.mode, this.correctAnswer);
         _showDialog(
             isCorrect,
             true,
-            question.printAnswer(
-                this.mode, this.index)); // _showDialog(正誤判定, 終了判定, 答えのEmmet)
+            question.printAnswer(this.mode, this.index,
+                this.randIndex)); // _showDialog(正誤判定, 終了判定, 答えのEmmet)
+        this.isTextFieldEnabled = false;
       }
       setState(() {
-        this.isTextFieldEnabled = false;
+        // this.isTextFieldEnabled = false;
       });
       _textController.clear();
     }
@@ -62,10 +78,7 @@ class _PlayPageState extends State<PlayPage> {
           appBar: AppBar(
             title: Text(this.mode),
           ),
-          floatingActionButton: FloatingActionButton(
-              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                  "/", (_) => false) // プッシュされたルート下にある全てのルートを削除した後、ホーム画面を表示
-              ),
+          floatingActionButton: FloatingActionButton(onPressed: () => {}),
           bottomNavigationBar: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -101,8 +114,11 @@ class _PlayPageState extends State<PlayPage> {
                           ),
                           child: SingleChildScrollView(
                             child: Text(
-                              question.printQuestion(
-                                  this.mode, this.index), // Todo クエスチョンの作成
+                              this.mode == 'ランダム'
+                                  ? question.randomQuestion(
+                                      this.index, this.randIndex)
+                                  : question.printQuestion(
+                                      this.mode, this.index), // Todo クエスチョンの作成
                               style: TextStyle(fontSize: 20.0),
                             ),
                           ),
@@ -142,8 +158,8 @@ class _PlayPageState extends State<PlayPage> {
                           color: Colors.teal[600],
                           textColor: Colors.white,
                           onPressed: () {
-                            model.add(this.mode);
-                            _submission(this.index);
+                            // model.add(this.mode);
+                            _submission(this.index, model);
                           }),
                     ]),
                 Row(
@@ -152,7 +168,9 @@ class _PlayPageState extends State<PlayPage> {
                       Padding(
                           padding: EdgeInsets.only(top: 32),
                           child: Text(
-                            '${this.correctAnswer} / 15',
+                            this.mode == 'レベル３'
+                                ? '${this.currentIndex} / 10'
+                                : '${this.currentIndex} / 15',
                             style: TextStyle(fontSize: 20),
                           ))
                     ])
@@ -167,12 +185,14 @@ class _PlayPageState extends State<PlayPage> {
       var value1 = await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: Text('終了！'),
-          content: Text('お疲れさん！'),
+          title: Text('終了'),
+          content: this.mode == 'レベル３'
+              ? Text('お疲れ様でした。\n正答率：${this.correctAnswer}/10')
+              : Text('お疲れ様でした。\n正答率：${this.correctAnswer}/15'),
           actions: <Widget>[
             // Todo
             SimpleDialogOption(
-              child: Text('トップへ'),
+              child: Center(child: Text('トップへ')),
               onPressed: () {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil("/", (_) => false);
@@ -185,16 +205,8 @@ class _PlayPageState extends State<PlayPage> {
       var value2 = await showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: isEnd
-              ? Text('終了！')
-              : isCorrect
-                  ? Text('正解！')
-                  : Text('不正解...'),
-          content: isEnd
-              ? Text('お疲れ様でした。')
-              : isCorrect
-                  ? Text('その調子！')
-                  : Text('正解は「${answer}」です。'),
+          title: isCorrect ? Text('正解！') : Text('不正解...'),
+          content: isCorrect ? Text('その調子！') : Text('正解は「${answer}」です。'),
         ),
       );
     }

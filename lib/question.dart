@@ -4,6 +4,23 @@ class Question {
   final String mode;
   Question(this.mode);
 
+  int returnQuestionLength(String mode) {
+    switch (mode) {
+      case 'レベル１':
+        return questions1.length;
+        break;
+      case 'レベル２':
+        return questions2.length;
+        break;
+      case 'レベル３':
+        return questions3.length;
+        break;
+      default:
+        return 15;
+        break;
+    }
+  }
+
   // Todo
   String printQuestion(String mode, int i) {
     switch (mode) {
@@ -22,7 +39,7 @@ class Question {
   }
 
   // Todo
-  String printAnswer(String mode, int i) {
+  String printAnswer(String mode, int i, int randIndex) {
     switch (mode) {
       case 'レベル１':
         return questions1[i][1];
@@ -34,11 +51,14 @@ class Question {
         return questions3[i][1];
         break;
       default:
+        List sumQuestion = [...questions1, ...questions2, ...questions3];
+        print(randIndex);
+        return sumQuestion[randIndex][1];
         break;
     }
   }
 
-  bool checkTheAnswer(String mode, int i, String emmet) {
+  bool checkTheAnswer(String mode, int i, String emmet, int randIndex) {
     switch (mode) {
       case 'レベル１':
         if (emmet == questions1[i][1]) {
@@ -62,7 +82,24 @@ class Question {
         }
         break;
       default:
+        List sumQuestion = [...questions1, ...questions2, ...questions3];
+        if (emmet == sumQuestion[randIndex][1]) {
+          return true;
+        } else {
+          return false;
+        }
         break;
+    }
+  }
+
+  String randomQuestion(int i, int randIndex) {
+    List sumQuestion = [...questions1, ...questions2, ...questions3];
+    if (i < 15 && randIndex == 0) {
+      var rand = math.Random();
+      int randIndex = rand.nextInt(40);
+      return sumQuestion[randIndex][0];
+    } else if (i < 15) {
+      return sumQuestion[randIndex][0];
     }
   }
 

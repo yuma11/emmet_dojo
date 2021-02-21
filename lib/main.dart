@@ -143,7 +143,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Text(
-                      _modeScore.toString(),
+                      _modeName == 'ランダム'
+                          ? ''
+                          : _modeName == 'レベル３'
+                              ? '${_modeScore.toString()} / 10'
+                              : '${_modeScore.toString()} / 15',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

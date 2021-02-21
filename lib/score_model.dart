@@ -24,20 +24,35 @@ class ScoreModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void add(String mode) async {
+  void add(String mode, int correctAnswer) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     switch (mode) {
       case 'レベル１':
-        this.level1Score = (prefs.getInt(mode) ?? 0) + 1;
-        await prefs.setInt(mode, this.level1Score);
+        if (prefs.getInt(mode) == null) {
+          this.level1Score = correctAnswer;
+          await prefs.setInt(mode, this.level1Score);
+        } else if (correctAnswer > prefs.getInt(mode)) {
+          this.level1Score = correctAnswer;
+          await prefs.setInt(mode, this.level1Score);
+        }
         break;
       case 'レベル２':
-        this.level2Score = (prefs.getInt(mode) ?? 0) + 1;
-        await prefs.setInt(mode, this.level2Score);
+        if (prefs.getInt(mode) == null) {
+          this.level2Score = correctAnswer;
+          await prefs.setInt(mode, this.level2Score);
+        } else if (correctAnswer > prefs.getInt(mode)) {
+          this.level2Score = correctAnswer;
+          await prefs.setInt(mode, this.level2Score);
+        }
         break;
       case 'レベル３':
-        this.level3Score = (prefs.getInt(mode) ?? 0) + 1;
-        await prefs.setInt(mode, this.level3Score);
+        if (prefs.getInt(mode) == null) {
+          this.level3Score = correctAnswer;
+          await prefs.setInt(mode, this.level3Score);
+        } else if (correctAnswer > prefs.getInt(mode)) {
+          this.level3Score = correctAnswer;
+          await prefs.setInt(mode, this.level3Score);
+        }
         break;
       case 'ランダム':
         this.randomScore = (prefs.getInt(mode) ?? 0) + 1;
